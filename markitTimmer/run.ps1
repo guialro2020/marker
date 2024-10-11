@@ -1,3 +1,17 @@
+# Input bindings are passed in via param block.
+param($Timer)
+
+# Get the current universal time in the default string format
+$currentUTCtime = (Get-Date).ToUniversalTime()
+
+# The 'IsPastDue' porperty is 'true' when the current function invocation is later than scheduled.
+if ($Timer.IsPastDue) {
+    Write-Host "PowerShell timer is running late!"
+}
+
+# Write an information log with the current time.
+Write-Host "PowerShell timer trigger function ran! TIME: $currentUTCtime"
+
 $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
 $session.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0"
 # Adiciona os cookies...
@@ -49,15 +63,11 @@ try {
     -Body "deviceID=8001&eventType=1&userName=1905121&password=Chanceller#*7"
     
     # Salva a resposta em um arquivo de log
-    $response.Content | Out-File -FilePath "C:\Temp\marker_log.txt" -Append
+    Write-Host $response.Content
 
     # Exibe a resposta no terminal
     $response.Content
 } catch {
     # Em caso de erro, loga o erro
-    $_ | Out-File -FilePath "C:\Temp\marker_log.txt" -Append
     Write-Host "Ocorreu um erro durante a requisição: $_"
 }
-
-# Mantém o prompt aberto até que o usuário pressione Enter
-Read-Host "Pressione Enter para fechar"
